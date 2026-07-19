@@ -1,0 +1,37 @@
+# Environments
+.env
+.venv/
+env/
+venv/
+
+# Dependencies
+node_modules/
+
+# Build and Next.js
+.next/
+out/
+build/
+dist/
+
+# Database
+*.sqlite3
+*.db
+parcel_detection.db
+
+# Uploads and Media
+backend/uploads/
+backend/ml/weights/
+*.mp4
+*.pt
+*.pth
+*.avi
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# OS Files
+.DS_Store
+Thumbs.db
