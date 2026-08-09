@@ -91,7 +91,10 @@ def stream_video(video_id: int, db: Session = Depends(get_db)):
             while True:
                 # Need fresh DB session/query to check status because we are yielding
                 current_video = db.query(Video).filter(Video.id == video_id).first()
-                if current_video.status in ["completed", "failed"] and q.empty():
+                if current_video:
+                    db.refresh(current_video) # Force SQLAlchemy to fetch latest data, ignoring cache
+                
+                if current_video and current_video.status in ["completed", "failed"] and q.empty():
                     break
                 
                 try:
