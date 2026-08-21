@@ -14,7 +14,7 @@ from fastapi.staticfiles import StaticFiles
 from app.config import settings
 from app.database import engine, SessionLocal
 from app.models import Base
-from app.routers import auth, videos, parcels, dashboard
+from app.routers import auth, videos, parcels, dashboard, webcam
 from app.routers.auth import seed_test_user
 
 # Configure logging
@@ -76,6 +76,7 @@ app.include_router(auth.router)
 app.include_router(videos.router)
 app.include_router(parcels.router)
 app.include_router(dashboard.router)
+app.include_router(webcam.router)
 
 
 @app.get("/health")

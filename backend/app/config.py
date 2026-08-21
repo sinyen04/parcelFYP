@@ -27,6 +27,10 @@ class Settings(BaseSettings):
     USE_MOCK_MODEL: bool = True
     MODEL_WEIGHTS_PATH: str = str(_backend_dir / "ml" / "weights" / "best.pt")
 
+    # ── Tracking ─────────────────────────────────────────────────────
+    # Parcel confirmation threshold in seconds
+    CONFIRMATION_THRESHOLD_SECONDS: float = 5.0
+
     # ── Database ─────────────────────────────────────────────────────
     DATABASE_URL: str = f"sqlite:///{_backend_dir / 'parcel_detection.db'}"
 

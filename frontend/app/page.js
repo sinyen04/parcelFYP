@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import SummaryCards from "@/components/summary-cards";
-import UploadPanel from "@/components/upload-panel";
+import DetectionPanel from "@/components/detection-panel";
 import ParcelList from "@/components/parcel-list";
 import LoginForm from "@/components/login-form";
 import { logout, getToken } from "@/lib/api-client";
@@ -76,9 +76,9 @@ export default function DashboardPage() {
           <SummaryCards refreshTrigger={refreshKey} />
         </section>
 
-        {/* Upload Panel */}
-        <section id="upload-section">
-          <UploadPanel onProcessingComplete={handleProcessingComplete} />
+        {/* Detection Panel (Webcam / Upload) */}
+        <section id="detection-section">
+          <DetectionPanel onProcessingComplete={handleProcessingComplete} />
         </section>
 
         {/* Parcel Lists */}

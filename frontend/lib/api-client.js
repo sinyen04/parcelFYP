@@ -120,3 +120,10 @@ export function getVideoStreamUrl(videoId) {
   if (!videoId) return null;
   return `${API_BASE}/videos/${videoId}/stream`;
 }
+
+// ── Webcam WebSocket URL ─────────────────────────────────────────────
+
+export function getWebcamWsUrl() {
+  const base = API_BASE.replace(/^http/, "ws");
+  return `${base}/ws/webcam`;
+}

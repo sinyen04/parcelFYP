@@ -70,19 +70,19 @@ def process_video(video_path: str, video_id: int, db: Session):
     # { track_id: { "detection": dict, "frame": np.ndarray } }
     best_detections: dict[int, dict] = {}
 
+    # Calculate confirmation threshold in frames
+    confirmation_frames = int(settings.CONFIRMATION_THRESHOLD_SECONDS * fps)
+    
+    # Track confirmation states
+    track_frame_counts: dict[int, int] = {}
+    confirmed_tracks: set[int] = set()
+
     frame_index = 0
-    # Process every Nth frame to speed things up (every 5th frame)
-    frame_skip = max(1, int(fps // 6))
 
     while True:
         ret, frame = cap.read()
         if not ret:
             break
-
-        # Skip frames for efficiency
-        if frame_index % frame_skip != 0:
-            frame_index += 1
-            continue
 
         timestamp = frame_index / fps
 
@@ -102,14 +102,30 @@ def process_video(video_path: str, video_id: int, db: Session):
             )
         # ────────────────────────────────────────────────────────────
 
+        # ── Update Track Frame Counts and Confirmations ─────────────
+        for det in detections:
+            tid = det["track_id"]
+            track_frame_counts[tid] = track_frame_counts.get(tid, 0) + 1
+            if track_frame_counts[tid] >= confirmation_frames:
+                confirmed_tracks.add(tid)
+        # ────────────────────────────────────────────────────────────
+
         # ── Live Streaming: Draw annotations and push to queue ──────
         if video_id in active_streams and active_streams[video_id]:
             # Draw on a copy of the frame for the stream
             stream_frame = frame.copy()
             for det in detections:
+                tid = det["track_id"]
                 x, y, w, h = det["bbox"]
-                label = f'{det["condition"]} {det["confidence"]:.2f}'
-                color = (0, 0, 255) if det["condition"] == "damaged" else (0, 255, 0)
+                
+                count = track_frame_counts.get(tid, 0)
+                if tid in confirmed_tracks:
+                    label = f'CAPTURED | {det["condition"]} {det["confidence"]:.2f}'
+                    color = (0, 255, 255)  # Yellow for captured
+                else:
+                    label = f'{count}/{confirmation_frames} frames | {det["condition"]}'
+                    color = (0, 165, 255)  # Orange for in-progress
+
                 cv2.rectangle(stream_frame, (x, y), (x + w, y + h), color, 2)
                 cv2.putText(stream_frame, label, (x, max(10, y - 10)), 
                             cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
@@ -143,6 +159,9 @@ def process_video(video_path: str, video_id: int, db: Session):
 
     # ── Save crops and write to database ────────────────────────────
     for track_id, data in best_detections.items():
+        if track_id not in confirmed_tracks:
+            continue  # Skip short-lived/spurious tracks
+            
         det = data["detection"]
         frame = data["frame"]
         x, y, w, h = det["bbox"]
