@@ -94,6 +94,7 @@ async def webcam_detect(ws: WebSocket):
                     frame=frame,
                     weights_path=settings.MODEL_WEIGHTS_PATH,
                     frame_timestamp=timestamp,
+                    conf_threshold=settings.CONFIDENCE_THRESHOLD,
                 )
 
             # ── Update track confirmation counts ─────────────────────

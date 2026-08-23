@@ -107,6 +107,7 @@ def process_video(video_path: str, video_id: int, db: Session):
                 frame=inference_frame,
                 weights_path=settings.MODEL_WEIGHTS_PATH,
                 frame_timestamp=timestamp,
+                conf_threshold=settings.CONFIDENCE_THRESHOLD,
             )
         # ────────────────────────────────────────────────────────────
 

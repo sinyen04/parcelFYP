@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     # >>> SWITCH: set to False once you have a real best.pt <<<
     USE_MOCK_MODEL: bool = True
     MODEL_WEIGHTS_PATH: str = str(_backend_dir / "ml" / "weights" / "best.pt")
+    
+    # ── Inference ────────────────────────────────────────────────────
+    CONFIDENCE_THRESHOLD: float = 0.25
 
     # ── Grayscale preprocessing ──────────────────────────────────────
     # Set to True when the model was trained on grayscale images.
