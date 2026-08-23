@@ -27,6 +27,12 @@ class Settings(BaseSettings):
     USE_MOCK_MODEL: bool = True
     MODEL_WEIGHTS_PATH: str = str(_backend_dir / "ml" / "weights" / "best.pt")
 
+    # ── Grayscale preprocessing ──────────────────────────────────────
+    # Set to True when the model was trained on grayscale images.
+    # Converts each video frame to grayscale (then back to 3-channel)
+    # before passing it to inference.
+    GRAYSCALE_INPUT: bool = False
+
     # ── Tracking ─────────────────────────────────────────────────────
     # Parcel confirmation threshold in seconds
     CONFIRMATION_THRESHOLD_SECONDS: float = 5.0

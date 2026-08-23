@@ -86,17 +86,25 @@ def process_video(video_path: str, video_id: int, db: Session):
 
         timestamp = frame_index / fps
 
+        # ── Grayscale preprocessing (if model was trained on grayscale) ─
+        if settings.GRAYSCALE_INPUT:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            inference_frame = cv2.cvtColor(gray, cv2.COLOR_GRAY2BGR)
+        else:
+            inference_frame = frame
+        # ────────────────────────────────────────────────────────────────
+
         # ── Run inference (mock or real) ────────────────────────────
         if settings.USE_MOCK_MODEL:
             detections = run_mock_inference_on_frame(
-                frame=frame,
+                frame=inference_frame,
                 frame_timestamp=timestamp,
                 frame_index=frame_index,
                 total_frames=total_frames,
             )
         else:
             detections = run_inference_on_frame(
-                frame=frame,
+                frame=inference_frame,
                 weights_path=settings.MODEL_WEIGHTS_PATH,
                 frame_timestamp=timestamp,
             )
